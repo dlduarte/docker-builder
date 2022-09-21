@@ -7,18 +7,18 @@ npm install
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+npm run electron:serve
 ```
 
-### Compiles and minifies for production
+### Compiles and minifies for production (Linux)
 ```
-npm run build
+npm run electron:build
 ```
 
-### Lints and fixes files
+### Compiles and minifies for production (Windows)
 ```
-npm run lint
+npm run electron:build:windows
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Configuration Reference](https://nklayman.github.io/vue-cli-plugin-electron-builder/).
