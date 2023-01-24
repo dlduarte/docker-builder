@@ -1,4 +1,5 @@
 import notification from "@/backend/notification";
+import * as db from "@/backend/database";
 
 const fs = require("fs");
 const BASIC_PATH = require("electron").app.getPath('home');
@@ -35,6 +36,7 @@ export async function configure(event, config) {
         `
     );
 
+
     const configDockerFile = configPath() + '/cmd/configure-docker.sh';
     fs.writeFileSync(
         configDockerFile,
@@ -46,9 +48,10 @@ export async function configure(event, config) {
         `
     );
 
+    const cmdFolderPermissions = 'chmod -R 777 ' + configPath();
     const cmdPermitDockerPushFile = 'chmod +x ' + pushDockerImageFile;
     const cmdPermitConfigFile = 'chmod +x ' + configDockerFile;
-    const finalCmd = `${cmdPermitDockerPushFile} && ${cmdPermitConfigFile} && ${configDockerFile}`;
+    const finalCmd = `${cmdFolderPermissions} && ${cmdPermitDockerPushFile} && ${cmdPermitConfigFile} && ${configDockerFile}`;
 
     sudo.exec(
         finalCmd,
@@ -62,6 +65,8 @@ export async function configure(event, config) {
             }
         }
     )
+
+    db.initialize();
 }
 
 export async function isConfigured() {

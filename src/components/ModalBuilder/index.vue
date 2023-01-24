@@ -19,6 +19,11 @@
       <v-container>
         <v-row>
           <v-col cols="12" md="4">
+            <v-select v-model="builder.profile" label="Profile" :items="profiles" item-text="name" item-value="value"/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="4">
             <v-text-field v-model="builder.name" label="Nome" @input="e => hyphenation(e)"></v-text-field>
           </v-col>
         </v-row>
@@ -34,7 +39,7 @@
         </v-row>
         <v-row>
           <v-col cols="12" md="4">
-            <v-text-field v-model="builder.path" label="Local do dockerfile"></v-text-field>
+            <v-file-input v-model="inputFile" label="Carregar Dockerfile"/>
           </v-col>
         </v-row>
         <v-row v-if="builder.id">
@@ -66,12 +71,6 @@ export default {
       type: Object
     }
   },
-  data() {
-    return {
-      sheet: false,
-      builder: {name: '', image: '', version: '', path: ''}
-    }
-  },
   watch: {
     selectedItem: {
       async handler(selectedItem) {
@@ -80,19 +79,28 @@ export default {
       immediate: true
     }
   },
+  beforeMount() {
+    this.inputFile = null;
+  },
+  data() {
+    return {
+      inputFile: null,
+      profiles: [{name: 'Produção', value: 'prod'}, {name: 'Homologação', value: 'hom'}],
+      builder: {profile: '', name: '', image: '', version: '', path: ''}
+    }
+  },
   methods: {
     hyphenation(newValue) {
-      this.builder.image = newValue
-          .toLowerCase()
-          .replaceAll(' ', '-');
+      this.builder.image = newValue.toLowerCase().replaceAll(' ', '-');
     },
     save() {
+      this.builder.path = this.inputFile.path;
+
       window.ipcRenderer.send('save-builders', this.builder);
       this.$emit('close', true);
     },
     remove() {
       window.ipcRenderer.send('remove-builders', this.builder.id);
-      this.sheet = false;
       this.$emit('close', true);
     }
   }

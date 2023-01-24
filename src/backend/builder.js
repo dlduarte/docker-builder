@@ -1,5 +1,4 @@
-import {deleteFile, readFile, readFolder, writeFile} from "@/utilities/file";
-import {v4 as uuid} from "uuid";
+import {createFolfer, readJson, readFolder, writeFile, readFile, deleteFolder} from "@/utilities/file";
 
 const BASIC_PATH = require('@/utilities/configure-app').configPath() + '/builders/';
 
@@ -7,17 +6,21 @@ export function listBuilders() {
     return readFolder(BASIC_PATH);
 }
 
-export function findBuilder(event, id) {
-    return readFile(`${BASIC_PATH}${id}.json`);
+export function findBuilder(event, image) {
+    return readJson(`${BASIC_PATH}${image}/config.json`);
 }
 
 export function saveBuilder(event, builder) {
-    if (!builder.id) builder.id = uuid();
-    writeFile(`${BASIC_PATH}${builder.id}.json`, JSON.stringify(builder, null, 2))
+    const path = `${BASIC_PATH}${builder.image}`;
+    const dockerfile = readFile(builder.path);
+
+    delete builder.path;
+
+    createFolfer(path);
+    writeFile(path + '/Dockerfile', dockerfile);
+    writeFile(path + '/config.json', JSON.stringify(builder, null, 2))
 }
 
-export function removeBuilder(event, id) {
-    if (id) {
-        deleteFile(`${BASIC_PATH}${id}.json`)
-    }
+export function removeBuilder(event, image) {
+    deleteFolder(`${BASIC_PATH}${image}`)
 }

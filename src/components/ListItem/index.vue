@@ -13,6 +13,9 @@
       </v-list-item-content>
 
       <v-list-item-action>
+        <v-chip class="ma-2" color="primary" label small outlined>{{ item.profile }}</v-chip>
+      </v-list-item-action>
+      <v-list-item-action>
         <v-btn icon @click="select">
           <v-icon title="Configurar imagem">mdi-cog</v-icon>
         </v-btn>
@@ -118,7 +121,7 @@ export default {
 
     },
     select() {
-      this.$emit('selectItem', this.item.id)
+      this.$emit('selectItem', this.item.image)
     }
   }
 }

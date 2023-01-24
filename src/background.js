@@ -21,7 +21,7 @@ app.whenReady().then(async () => {
                     mainWindow.show();
                 }
 
-                mainWindow.focus()
+                mainWindow.focus();
             }
         })
 
@@ -44,9 +44,14 @@ async function createWindow() {
             nodeIntegration: true,
             enableRemoteModule: true,
             contextIsolation: true,
-            preload: path.join(__dirname, 'preload.js')
+            preload: path.join(__dirname, 'preload.js'),
+            devTools: true,
         }
     });
+
+    mainWindow.on('ready-to-show', function () {
+        mainWindow.openDevTools();
+    })
 
     mainWindow.setTitle("Docker Builder");
     mainWindow.setIcon(nativeIcon);
